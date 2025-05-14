@@ -30,7 +30,13 @@ void EspNow(void* pvParameters)  // core o program must have wifi
   for (;;)  // must used permant for loop for core programming
   {
    Run_Data();
-   Espnow_Run_Data();
+   // Espnow_Run_Data();
+   static unsigned long lastMqtt = 0;
+
+   if ((millis () - lastMqtt) > 5000){
+   WiFiMqtt();
+   lastMqtt = millis ();
+   }
 
     if (CTime == 1)  // Lcd has send coomand to chane time Ctime will zero in TRc Set_time Ctime will 1 on espnow Routine
 
@@ -55,14 +61,14 @@ void EspNow(void* pvParameters)  // core o program must have wifi
      // Set_Time_inc();
       new_hour();
       Read_All();
-      Espnow_ALL_Data();
+      //Espnow_ALL_Data();
       Update = "No";
     }
 
      if (RTC_Err == 2)  // If Cell in RTC Lost send data to Lcd
     {
       Read_All();
-      Espnow_ALL_Data();
+      //Espnow_ALL_Data();
       Update = "No";
     }
 

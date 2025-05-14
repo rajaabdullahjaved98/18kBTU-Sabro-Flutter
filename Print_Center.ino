@@ -157,7 +157,7 @@ Serial.printf("REnergy_Hour=%g,REnergy_Day=%g.REnergy_Month=%f,",R_Data.R_Hour_E
   Serial.printf("Peak_Rate=%g,OFF_Peak=%g,R_Peak%g,Rs_consume=%g,",peak_unit_rate,off_peak_unit_rate,Running_Peak,Current_Rs_hour);
    Serial.printf("Current_Energy=%g,Target_Energy=%g,CEnergy_Cost=%g,Cutomer_Rs=%g,Money_Diffl=%g \n\n",Energy,Target_Energy,Currenr_Energy_cost,Cutomer_Rs,Money_Equal);
    Serial.printf("CT=%g,PT_Start=%i,PT_Stop=%i,TPM=%i,SPM=%i,OP=%i,BRPM_PKRS=%i,RS_RPM=%i,BRPM=%i,BRPM_counter=%i,E_cal=%i,MT=%i,Met_save=%i\n",CT,peak_time_start,peak_time_stop,TPM,SPM,operation_mode,Base_RPM_PKRS,RS_RPM,BRPM,BRPM_counter,E_cal,Met_Type,Met_save);
-  Serial.printf("DP_New=%g,Dp_Final=%g,SL_New=%g,SL_final=%g,H_Bosster=%i,send_name=%i,Name:%s,Delta_Go=%i\n\n",DP_New,Dp_Final,SL_New,SL_final,H_Bosster,send_name,nameString.c_str(),Delta_Go);
+  Serial.printf("DP_New=%g,Dp_Final=%g,SL_New=%g,SL_final=%g,H_Bosster=%i,Name:%s,Delta_Go=%i\n\n",DP_New,Dp_Final,SL_New,SL_final,H_Bosster,nameString.c_str(),Delta_Go);
 }
 
 void print_master(uint16_t print_option)

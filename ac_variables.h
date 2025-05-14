@@ -391,4 +391,13 @@ bool ir_interrupt_detach= false;
 unsigned long ir_time_check;
 bool caliberated = false;
 
+////// MQTT AND WIFI VARIABLES //////
+const char* ssid = "Sabro_design";
+const char* password = "STPL@sabro";
+
+const char* mqttServer = "ccbae99e21f740d199191cc1fa4ff522.s1.eu.hivemq.cloud";
+const uint16_t mqttPort = 8883;
+const char* mqttUser = "test_device";
+const char* mqttPassword = "Test1234";
+
 #endif

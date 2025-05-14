@@ -63,6 +63,13 @@ RTC_DS3231 rtc;
 #error Target CONFIG_IDF_TARGET is not supported
 #endif
 
+#include <WiFi.h>
+#include <PubSubClient.h>
+#include <WiFiClientSecure.h>
+
+WiFiClientSecure esp32Client;
+PubSubClient client(esp32Client);
+
 #include "ac_variables.h"
 
 #endif

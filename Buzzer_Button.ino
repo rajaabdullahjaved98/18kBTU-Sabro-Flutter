@@ -38,7 +38,7 @@ void Button_Setup()
 
 void Buzzer()
 {
-//buzzer.tone(NOTE_DS7,de1);
+buzzer.tone(NOTE_DS7,de1);
 EEP="YES";                        // if Buzzer Beep then Epprom data is saves
 
   
@@ -48,18 +48,18 @@ EEP="YES";                        // if Buzzer Beep then Epprom data is saves
 
 void Buzzer_Tone()
 {
-//buzzer.playSabroThree();
-//buzzer.tone(NOTE_DS7,de1);
+buzzer.playSabroThree();
+buzzer.tone(NOTE_DS7,de1);
                        // if Buzzer Beep then Epprom data is saves
 //Serial.print("In Buzzer*********************************************************************************************");
 }
 
 void Buzzer_pair(){
-//buzzer.playPair();
+buzzer.playPair();
 }
 
 void Buzzer_unpair(){
-//buzzer.playUnpair();
+buzzer.playUnpair();
 }
 
 

@@ -1,4 +1,4 @@
-#define Sabro_remote 1184005015
+/*#define Sabro_remote 1184005015
 #define Sabro_remote_small 1184005014
 
 
@@ -668,4 +668,4 @@ if (deny_pair){
     send_name = false;
   }
 
-}
+}*/
