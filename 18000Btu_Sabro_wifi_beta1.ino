@@ -88,7 +88,7 @@ void setup() {
   }
   Serial.println(WiFi.localIP());
   client.setServer(mqttServer, mqttPort);
-  esp32Client.setInsecure();
+  client.setCallback(callback);
 
   Task_Setup();
 

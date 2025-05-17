@@ -67,7 +67,7 @@ RTC_DS3231 rtc;
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
 
-WiFiClientSecure esp32Client;
+WiFiClient esp32Client;
 PubSubClient client(esp32Client);
 
 #include "ac_variables.h"
