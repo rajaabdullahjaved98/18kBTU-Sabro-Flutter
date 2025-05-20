@@ -400,4 +400,13 @@ const uint16_t mqttPort = 1883;
 const char* mqttUser = "test_device";
 const char* mqttPassword = "Test1234";
 
+String mac;
+String mqttSubscribeTopic;
+String mqttPublishTopic;
+String clientId;
+
+const char* subscribeTopic = nullptr;
+const char* publishTopic = nullptr;
+
+
 #endif

@@ -16,7 +16,6 @@ void Task_Setup()
   xTaskCreatePinnedToCore(EspNow, "Task4", 4000, NULL, 1, &Task4, 0);       // Espnow
   xTaskCreatePinnedToCore(Min_KW, "Task5", 4000, NULL, 1, &Task5, 0);
   xTaskCreatePinnedToCore(Comp_Task, "Task6", 4000, NULL, 1, &Task6, 1);
-
 }
 
 
@@ -29,14 +28,15 @@ void EspNow(void* pvParameters)  // core o program must have wifi
 {
   for (;;)  // must used permant for loop for core programming
   {
-   Run_Data();
-   // Espnow_Run_Data();
-   static unsigned long lastMqtt = 0;
+    Run_Data();
+    // Espnow_Run_Data();
+    connectToWiFi();
+    static unsigned long lastMqtt = 0;
 
-   if ((millis () - lastMqtt) > 5000){
-   WiFiMqtt();
-   lastMqtt = millis ();
-   }
+    if ((millis() - lastMqtt) > 5000) {
+      WiFiMqtt();
+      lastMqtt = millis();
+    }
 
     if (CTime == 1)  // Lcd has send coomand to chane time Ctime will zero in TRc Set_time Ctime will 1 on espnow Routine
 
@@ -44,35 +44,34 @@ void EspNow(void* pvParameters)  // core o program must have wifi
       Set_Time();
     }
 
-    if (POM_RESET == 786786373)   // All EEPROM Meter Reaet
+    if (POM_RESET == 786786373)  // All EEPROM Meter Reaet
     {
 
       Reset_Meter();
       POM_RESET = 0;
     }
-     if ((Update == "Yes") && (RTC_Err == 0))
-   {
-     
-     Cal_Power();
-    check_peakness();
-   // trend_analysis();
-    
-   // run_run();
-     // Set_Time_inc();
+    if ((Update == "Yes") && (RTC_Err == 0)) {
+
+      Cal_Power();
+      check_peakness();
+      // trend_analysis();
+
+      // run_run();
+      // Set_Time_inc();
       new_hour();
       Read_All();
       //Espnow_ALL_Data();
       Update = "No";
     }
 
-     if (RTC_Err == 2)  // If Cell in RTC Lost send data to Lcd
+    if (RTC_Err == 2)  // If Cell in RTC Lost send data to Lcd
     {
       Read_All();
       //Espnow_ALL_Data();
       Update = "No";
     }
 
-  lcd_control_check();
+    lcd_control_check();
     vTaskDelay(1000 / portTICK_PERIOD_MS);  // 10 seconds
   }
 }
@@ -113,7 +112,7 @@ void Fan_Run(void* pvParameters)  // core o program must have wifi
       }
     }
     Pressure_Cal();
-     unit_calculate_1();
+    unit_calculate_1();
     // Serial.println("***********in Fan Run****************Task2\n");
     vTaskDelay(pdMS_TO_TICKS(10000));
   }
@@ -128,7 +127,7 @@ void Eeprom_Save(void* pvParameters)  // core o program must have wifi
     {
       EEprom_Confirm();
     }
-   
+
     //Serial.println("***********in EEprom save****************Task3*****************************\n");
     vTaskDelay(5000 / portTICK_PERIOD_MS);
   }
@@ -143,12 +142,12 @@ void Min_KW(void* pvParameters)  // core o program must have wifi
       if (RTC_Err != 2) {
         // Serial.printf("RTC in Task Making Error =0 ***********************************************************************\n");
         RTC_Err = 0;
-         Inv_Error="None";
-      R_Data.SL_Code=0;
+        Inv_Error = "None";
+        R_Data.SL_Code = 0;
       }
     }
-   
-   
+
+
 
     vTaskDelay(60000 / portTICK_PERIOD_MS);  // 60 seconds
   }
@@ -160,11 +159,11 @@ void Comp_Task(void* pvParameters)  // core o program must have wifi
 {
   for (;;)  // must used permant for loop for core programming
   {
-    Comprun=true;
-   Serial.printf("Comp_Task Making Comprun **********************************************************************true*\n");
-   
+    Comprun = true;
+    Serial.printf("Comp_Task Making Comprun **********************************************************************true*\n");
 
-    vTaskDelay(pdMS_TO_TICKS(40000)); //60 sec
+
+    vTaskDelay(pdMS_TO_TICKS(40000));  //60 sec
   }
 }
 
@@ -188,7 +187,7 @@ void System_OFF()  // core o program must have wifi
     digitalWrite(fan_high, LOW);
     sending(Manual_fan_speed, Write, data_HB, Motor_of);
     sending(Mode_Inv, Write, data_HB, inv_Mode_Of);
-   // sending(Manual_4Way, Write, data_HB, R_Valve_Of); // check fors sound in heating
+    // sending(Manual_4Way, Write, data_HB, R_Valve_Of); // check fors sound in heating
 
 
     Serial.printf("\nShut_down********************************************************Inverter Board **************************************Sytem ShutDown\n");
@@ -217,7 +216,6 @@ void System_OFF()  // core o program must have wifi
     vTaskSuspend(Task6);
     delay(100);
     Power_var = 0;
-   
   }
 
   ShutDown_Timer.detach();

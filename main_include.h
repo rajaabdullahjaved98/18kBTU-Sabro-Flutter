@@ -64,9 +64,15 @@ RTC_DS3231 rtc;
 #endif
 
 #include <WiFi.h>
+#include <WebServer.h>
+#include <ESPAsyncWebServer.h>
+#include <AsyncTCP.h>
 #include <PubSubClient.h>
+#include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
+#include <Prefernces.h>
 
+Preferences preferences;
 WiFiClient esp32Client;
 PubSubClient client(esp32Client);
 

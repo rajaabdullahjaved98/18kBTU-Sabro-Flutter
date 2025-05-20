@@ -81,25 +81,54 @@ void setup() {
   Eeprom_Read();
   //Espnow_setup();
 
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-  while(WiFi.status() != WL_CONNECTED) {
-    Serial.print(".");
-  }
-  Serial.println(WiFi.localIP());
-  client.setServer(mqttServer, mqttPort);
-  client.setCallback(callback);
-
   Task_Setup();
+}
 
-  
+void connectToWiFi() {
+  Serial.println("WiFi Function Called");
+  if (WiFi.status() != WL_CONNECTED) {
+    WiFi.mode(WIFI_STA);
+    Serial.println("Connecting to WiFi...");
+    WiFi.begin(ssid, password);
+
+    unsigned long startAttemptTime = millis();
+    const unsigned long timeout = 15000;  // 15 seconds
+
+    while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < timeout) {
+      delay(500);  // Wait a bit before checking again
+      Serial.print(".");
+    }
+
+    if (WiFi.status() == WL_CONNECTED) {
+      Serial.println("\nConnected to WiFi!");
+      Serial.println(WiFi.localIP());
+      client.setServer(mqttServer, mqttPort);
+      client.setCallback(callback);
+      initializeMqttTopics();
+    } else {
+      Serial.println("\nFailed to connect within timeout.");
+      // WiFi.disconnect(); // Optional: reset WiFi state
+    }
+  }
+}
+
+void initializeMqttTopics() {
+  mac = WiFi.macAddress();
+  mac.replace(":", "");
+  mqttSubscribeTopic = mac + "/command";
+  mqttPublishTopic = mac + "/state";
+  subscribeTopic = mqttSubscribeTopic.c_str();
+  publishTopic = mqttPublishTopic.c_str();
+  // String randomString = String(random(0xffff), HEX);
+  clientId = "ESP-" + mac;
 }
 
 
+
 void reconnectMqtt() {
-  while(!client.connected()) {
+  while (!client.connected()) {
     Serial.print("Connecting to MQTT.....");
-    if (client.connect("ESP32_Client_01")) {
+    if (client.connect(clientId.c_str())) {
       Serial.println("Connected!");
     } else {
       Serial.print("Failed, rc = ");
@@ -125,8 +154,8 @@ void loop() {
   }
   Time_Total_e = millis();
   Time_Total_c = Time_Total_e - Time_Total_s;
-  New_Print_Center();
-  Run_Print();
+  // New_Print_Center();
+  // Run_Print();
   // Pack_print();
   //pprint_ALL();
   // EP_Print();

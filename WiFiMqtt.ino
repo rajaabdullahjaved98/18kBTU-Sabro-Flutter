@@ -1,6 +1,5 @@
 
-const char* mqttSubscribeTopic = "esp32/ac/command";
-const char* mqttPublishTopic = "esp32/test/state";
+
 
 void WiFiMqtt() {
   /* if (WiFi.status() != WL_CONNECTED) {
@@ -22,10 +21,7 @@ void WiFiMqtt() {
   if (!client.connected()) {
     int attempt = 0;
     const int maxAttempts = 5;
-    String mac = WiFi.macAddress();
-    mac.replace(":", "");
-    String clientId = "ESP-";
-    clientId += String(random(0xffff), HEX);
+    
 
     while (!client.connected() && attempt < maxAttempts) {
       //Serial.printf("Connecting to MQTT (Attempt %d/%d)...\n", attempt + 1, maxAttempts);
@@ -33,16 +29,17 @@ void WiFiMqtt() {
         Serial.println("Connected to MQTT broker");
 
         String topic = "test/" + mac + "/topic";
-        Serial.println("Topic Name: " + topic);
-        client.subscribe(mqttSubscribeTopic);
-        client.publish(mqttPublishTopic, "ESP is online");
+        Serial.print("Topic Name: ");
+        Serial.println(publishTopic);
+        client.subscribe(subscribeTopic);
+        client.publish(publishTopic, "ESP is online");
 
         return;
       } else {
         Serial.print("Failed MQTT connection. State=");
         Serial.println(client.state());
         attempt++;
-        delay(2000);
+        delay(5000);
       }
     }
 
@@ -51,9 +48,9 @@ void WiFiMqtt() {
     }
   }
 
-  if (!client.connected()) {
-    reconnectMqtt();
-  }
+  // if (!client.connected()) {
+    //reconnectMqtt();
+  // }
 
   client.loop();
 
@@ -150,7 +147,7 @@ void WiFiMqtt() {
   // Finally publish the complete payload
   // client.publish(mqttPublishTopic, payload, payloadSize);
 
-  if (client.publish(mqttPublishTopic, payload, payloadSize)) {
+  if (client.publish(publishTopic, payload, payloadSize)) {
     Serial.println("Publish successful");
     // Serial.println("Payload: ");
     // for (int i = 0; i < payloadSize; i++) {
@@ -163,7 +160,7 @@ void WiFiMqtt() {
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  if (strcmp(topic, mqttSubscribeTopic) == 0) {
+  if (strcmp(topic, subscribeTopic) == 0) {
     if (length == 6) {
       bool power = payload[0];
       int temperature = payload[1];
@@ -189,61 +186,118 @@ void callback(char* topic, byte* payload, unsigned int length) {
       Set_Temp = (float)temperature;
 
       if (power == 0) {
+        // AC POWER OFF
+        Power = "OFF";
         bitWrite(Ble_8Bit1, 7, 0);
+
       } else {
+        // AC POWER ON
+        Power = "ON";
         bitWrite(Ble_8Bit1, 7, 1);
       }
 
       if (mode == 0) {
+        // COOLING MODE
+        Mode = "C";
         bitWrite(Ble_8Bit2, 6, 0);
         bitWrite(Ble_8Bit2, 7, 0);
+
+        // AUTO MODE OFF
+        bitWrite(Ble_8Bit2, 5, 0);
+      
       } else if (mode == 1) {
+        // FAN MODE
+        Mode = "F";
         bitWrite(Ble_8Bit2, 6, 1);
         bitWrite(Ble_8Bit2, 7, 0);
+
+        // SAVING MODE OFF
+        Saving_Mode = 0;
+        bitWrite(Ble_8Bit2, 4, 0);
+
+        // AUTO MODE OFF
+        bitWrite(Ble_8Bit2, 5, 0);
+
       } else if (mode == 2) {
+        // HEATING MODE
+        Mode = "H";
         bitWrite(Ble_8Bit2, 6, 0);
         bitWrite(Ble_8Bit2, 7, 1);
-      } else {
+
+        // AUTO MODE OFF
+        bitWrite(Ble_8Bit2, 5, 0);
+
+      } else if (mode == 4) {
+        // DRY MODE
+        Mode = "D";
         bitWrite(Ble_8Bit2, 6, 1);
         bitWrite(Ble_8Bit2, 7, 1);
+
+        // SAVING MODE OFF
+        Saving_Mode = 0;
+        bitWrite(Ble_8Bit2, 4, 0);
+
+        // AUTO MODE OFF
+        bitWrite(Ble_8Bit2, 5, 0);
+
+      } else {
+        // AUTO MODE
+        Mode = "A";
+        bitWrite(Ble_8Bit2, 5, 1);
+      
+        // SAVING MODE OFF
+        Saving_Mode = 0;
+        bitWrite(Ble_8Bit2, 4, 0);
       }
 
       if (fan == 0) {
-        bitWrite(Ble_8Bit1, 3, 0);
-        bitWrite(Ble_8Bit1, 4, 0);
-        bitWrite(Ble_8Bit1, 5, 0);
+        // bitWrite(Ble_8Bit1, 3, 0);
+        // bitWrite(Ble_8Bit1, 4, 0);
+        // bitWrite(Ble_8Bit1, 5, 0);
       } else if (fan == 1) {
+        Fan_Status = "L";
         bitWrite(Ble_8Bit1, 3, 1);
         bitWrite(Ble_8Bit1, 4, 0);
         bitWrite(Ble_8Bit1, 5, 0);
       } else if (fan == 2) {
+        Fan_Status = "M";
         bitWrite(Ble_8Bit1, 3, 0);
         bitWrite(Ble_8Bit1, 4, 1);
         bitWrite(Ble_8Bit1, 5, 0);
       } else if (fan == 3) {
+        Fan_Status = "H";
         bitWrite(Ble_8Bit1, 3, 1);
         bitWrite(Ble_8Bit1, 4, 1);
         bitWrite(Ble_8Bit1, 5, 0);
-      } else {
+      } else if (fan == 4) {
+        Fan_Status = "A";
         bitWrite(Ble_8Bit1, 3, 0);
         bitWrite(Ble_8Bit1, 4, 0);
         bitWrite(Ble_8Bit1, 5, 1);
+      } else {
+
       }
 
       if (swing == 0) {
+        Swing = "OF";
+        Swing_Stop();
         bitWrite(Ble_8Bit1, 6, 0);
       } else {
+        Swing = "ON";
         bitWrite(Ble_8Bit1, 6, 1);
       }
 
       if (eco == 0) {
+        Saving_Mode = 0;
         bitWrite(Ble_8Bit2, 4, 0);
       } else {
+        Saving_Mode = 1;
         bitWrite(Ble_8Bit2, 4, 1);
       }
     } else {
       Serial.println("Invalid Payload Length");
     }
+    Buzzer();
   } else {
     Serial.println("Invalid Topic");
   }
