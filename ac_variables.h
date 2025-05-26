@@ -392,6 +392,10 @@ unsigned long ir_time_check;
 bool caliberated = false;
 
 ////// MQTT AND WIFI VARIABLES //////
+String routerSSID = "";
+String routerPASS = "";
+String deviceName = "ESP_AP";
+
 const char* ssid = "Sabro_design";
 const char* password = "STPL@sabro";
 
@@ -401,6 +405,9 @@ const char* mqttUser = "test_device";
 const char* mqttPassword = "Test1234";
 
 String mac;
+bool isInternetAvailable = false;
+bool isMQTTConnected = false;
+bool shouldAttemptWiFi = false;
 String mqttSubscribeTopic;
 String mqttPublishTopic;
 String clientId;

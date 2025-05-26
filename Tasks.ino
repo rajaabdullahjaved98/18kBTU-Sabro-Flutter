@@ -30,7 +30,8 @@ void EspNow(void* pvParameters)  // core o program must have wifi
   {
     Run_Data();
     // Espnow_Run_Data();
-    connectToWiFi();
+    // connectToWiFi();
+    webSocketSend();
     static unsigned long lastMqtt = 0;
 
     if ((millis() - lastMqtt) > 5000) {

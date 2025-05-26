@@ -82,12 +82,26 @@ void setup() {
   //Espnow_setup();
 
   Task_Setup();
+
+  // webSocketSetup();
+  // WiFi.mode(WIFI_AP_STA);
+  // Serial.println("WIFI SET TO DUAL MODE");
+  webSocketSetup();
+}
+
+void webSocketSetup() {
+  WiFi.mode(WIFI_AP_STA);
+  loadCredentials();
+  startAccessPoint();
+  startWebSocketServer();
+
+  mac = WiFi.softAPmacAddress();
+  mac.replace(":", "");
 }
 
 void connectToWiFi() {
   Serial.println("WiFi Function Called");
   if (WiFi.status() != WL_CONNECTED) {
-    WiFi.mode(WIFI_STA);
     Serial.println("Connecting to WiFi...");
     WiFi.begin(ssid, password);
 
@@ -113,7 +127,7 @@ void connectToWiFi() {
 }
 
 void initializeMqttTopics() {
-  mac = WiFi.macAddress();
+  mac = WiFi.softAPmacAddress();
   mac.replace(":", "");
   mqttSubscribeTopic = mac + "/command";
   mqttPublishTopic = mac + "/state";
@@ -154,7 +168,7 @@ void loop() {
   }
   Time_Total_e = millis();
   Time_Total_c = Time_Total_e - Time_Total_s;
-  // New_Print_Center();
+  New_Print_Center();
   // Run_Print();
   // Pack_print();
   //pprint_ALL();

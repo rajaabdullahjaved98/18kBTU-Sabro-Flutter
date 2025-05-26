@@ -70,11 +70,13 @@ RTC_DS3231 rtc;
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
-#include <Prefernces.h>
+#include <Preferences.h>
 
 Preferences preferences;
 WiFiClient esp32Client;
 PubSubClient client(esp32Client);
+AsyncWebServer server(80);
+AsyncWebSocket ws("/ws");
 
 #include "ac_variables.h"
 
