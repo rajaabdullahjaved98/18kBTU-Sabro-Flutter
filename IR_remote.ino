@@ -27,39 +27,39 @@ void IR_Receiver() {
       Raw = IrReceiver.decodedIRData.decodedRawData;
       IrReceiver.printIRResultShort(&Serial);
     }
-    Serial.print("Output Value is ");
-    Serial.println(Raw, BIN);
-    Serial.println(sizeof(Raw));
+    // Serial.print("Output Value is ");
+    // Serial.println(Raw, BIN);
+    // Serial.println(sizeof(Raw));
 
 
     for (int i = 0; i < 23; ++i) {
 
-      Serial.printf("Bit%i,=%i\n", i, bitRead(Raw, i));
+      // Serial.printf("Bit%i,=%i\n", i, bitRead(Raw, i));
     }
 
 
-    Serial.printf("Rawis=%lu\n", Raw);
+    // Serial.printf("Rawis=%lu\n", Raw);
     bitCount = sizeof(Raw) * 8;  // Number of bits in Raw variable
     bitCount = bitCount - 8;
-    Serial.print("Bit Count:");
-    Serial.println(bitCount);
+    // Serial.print("Bit Count:");
+    // Serial.println(bitCount);
     //  if (bitRead(Raw,)==0)
     //         bitCount+=1;
     // Count the number of leading zeros
     // leadingZeros = __builtin_clz(Raw); // Count of leading zeros in the 32-bit representation
     Raw = Raw & (0x00FFFFFF);
-    Serial.printf("Raw is : %u\n", Raw);
+    // Serial.printf("Raw is : %u\n", Raw);
     //bitCount -= leadingZeros; // Adjust bit count
     //if (bitRead(Raw,23)==0)
     //bitCount+=1;
-    Serial.printf("Binary Digit Count is=%d\n", bitCount);
+    // Serial.printf("Binary Digit Count is=%d\n", bitCount);
 
 
 
     if (Raw == 0b00000000000000000000000000000000) {
       Garbage_counter2++;
 
-      Serial.printf("Got Garabage Zeros*******************************************************************************************Garbafe\n");
+      // Serial.printf("Got Garabage Zeros*******************************************************************************************Garbafe\n");
 
       IrReceiver.resume();  // Enable receiving of the next value
       attachInterrupt(RECVER_PIN, function_ISR, CHANGE);
@@ -72,7 +72,7 @@ void IR_Receiver() {
     {
       Garbage_counter++;
 
-      Serial.printf("Got Garabage Ones*******************************************************************************************Garbafe\n");
+      // Serial.printf("Got Garabage Ones*******************************************************************************************Garbafe\n");
 
       IrReceiver.resume();  // Enable receiving of the next value
       attachInterrupt(RECVER_PIN, function_ISR, CHANGE);

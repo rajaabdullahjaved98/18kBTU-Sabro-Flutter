@@ -18,7 +18,7 @@ void New_Print_Center()
 {
   
  
-  Serial.printf("\nPower=%s,Mode=%s,Swing=%s,Fan=%s,Set_Temp=%g,A_Temp=%s,S_Mode=%u::", Power.c_str(), Mode.c_str(), Swing.c_str(), Fan_Status.c_str(), Set_Temp, Auto_Temp.c_str(), Saving_Mode);
+  Serial.printf("\nPower=%s,Mode=%s,Swing=%s,Fan=%s,Set_Temp=%g,A_Temp=%s,S_Mode=%u,Bit4=%d,Bit5=%d,Bit6=%d,Bit7=%d::", Power.c_str(), Mode.c_str(), Swing.c_str(), Fan_Status.c_str(), Set_Temp, Auto_Temp.c_str(), Saving_Mode, bit4, bit5, bit6, bit7);
   Serial.printf("Room=%g,Coil=%g,Delta_Temp=%g", Room_sensor, Coil_sensor, Delta_Temp);
   Serial.printf("::Esp32=%s::Inv_Relay=%i::Pro_Run=%i::,Pro_to=%i;S_Delay=%s::Running_Mode=%s\n\n", Esp_32.c_str(), digitalRead(Inverter_OFF_PIN), Protocol_Run,Pro_to, Start_Delay.c_str(),Running_Mode.c_str());
   Serial.printf("Stop_Stop=%s,Comp_Start_Timer=%s,Motor_Timer=%s,Delta_Achived=%s,Fan_Running_Mode=%s,H_S=%i,H_T=%i,Power_var=%i,EEprom_Save=%s\n\n", Stop_Stop.c_str(),Comperssor_Start_timer, Motor_Timer.c_str(), Delta_Achived.c_str(), Fan_Running_Mode.c_str(), H_S, H_T, Power_var, EEP.c_str());

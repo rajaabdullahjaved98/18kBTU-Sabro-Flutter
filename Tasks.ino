@@ -28,16 +28,18 @@ void EspNow(void* pvParameters)  // core o program must have wifi
 {
   for (;;)  // must used permant for loop for core programming
   {
+    unsigned long loopTime = millis();
     Run_Data();
     // Espnow_Run_Data();
+    // webSocketSend();
     // connectToWiFi();
-    webSocketSend();
+    runNetworkCore();
     static unsigned long lastMqtt = 0;
 
-    if ((millis() - lastMqtt) > 5000) {
-      WiFiMqtt();
-      lastMqtt = millis();
-    }
+    // if ((millis() - lastMqtt) > 5000) {
+      // WiFiMqtt();
+      // lastMqtt = millis();
+    // }
 
     if (CTime == 1)  // Lcd has send coomand to chane time Ctime will zero in TRc Set_time Ctime will 1 on espnow Routine
 
@@ -73,7 +75,9 @@ void EspNow(void* pvParameters)  // core o program must have wifi
     }
 
     lcd_control_check();
-    vTaskDelay(1000 / portTICK_PERIOD_MS);  // 10 seconds
+    vTaskDelay(1000 / portTICK_PERIOD_MS); // 10 seconds
+    Serial.print("ESP NOW FOR LOOP TIME: ");
+    Serial.println(millis() - loopTime);  
   }
 }
 

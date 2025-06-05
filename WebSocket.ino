@@ -1,5 +1,5 @@
 void startAccessPoint() {
-  WiFi.softAP(deviceName.c_str(), "12345678");
+  WiFi.softAP(deviceName.c_str(), "");
   Serial.println("AP Started: " + deviceName);
 }
 
@@ -145,18 +145,19 @@ void onWebSocketMessage(void *arg, uint8_t *data, size_t len) {
         // AUTO MODE OFF
         bitWrite(Ble_8Bit2, 5, 0);
 
-      } else if (mode == 4) {
+      } else if (mode == 3) {
         // DRY MODE
         Mode = "D";
         bitWrite(Ble_8Bit2, 6, 1);
         bitWrite(Ble_8Bit2, 7, 1);
+      } else if (mode == 4) {
+        // AUTO MODE
+        Mode = "A";
+        bitWrite(Ble_8Bit2, 5, 1);
 
         // SAVING MODE OFF
         Saving_Mode = 0;
         bitWrite(Ble_8Bit2, 4, 0);
-
-        // AUTO MODE OFF
-        bitWrite(Ble_8Bit2, 5, 0);
 
       } else {
         // AUTO MODE
@@ -230,11 +231,32 @@ void startWebSocketServer() {
 }
 
 void webSocketSend() {
+  /*const uint8_t allowedValues[] = {
+    0, 1, 2, 3, 4, 5, 6,
+    11, 12, 13, 14, 15, 16, 17,
+    21, 22, 23, 24, 25, 26
+  };
+  const uint8_t allowedCount = sizeof(allowedValues) / sizeof(allowedValues[0]);
+
+  const uint8_t ibFaultCodes[] = {
+    0x05, 0x06, 0x35, 0x36, 0x37, 0x39, 0x55, 0x58,
+    0x61, 0x62, 0x64, 0x65, 0x66, 0x69, 0x71, 0x72,
+    0x73, 0x74, 0x76, 0x77, 0x79, 0x81, 0x82, 0x83,
+    0x91, 0x92, 0x93, 0x94, 0x96
+  };
+  const uint8_t ibFaultCount = sizeof(ibFaultCodes) / sizeof(ibFaultCodes[0]);*/
+
   const uint16_t payloadSize = 125;
   uint8_t payload[125];
   uint16_t index = 0;
 
+  bit4 = (R_Data.Ble_8Bit2 >> 4) & 0x01;
+  bit5 = (R_Data.Ble_8Bit2 >> 5) & 0x01;
+  bit6 = (R_Data.Ble_8Bit2 >> 6) & 0x01;
+  bit7 = (R_Data.Ble_8Bit2 >> 7) & 0x01;
+
   payload[index++] = R_Data.SL_Code; // 0
+  // payload[index++] = random(0, 11);
   payload[index++] = R_Data.Sec_Rtc; // 1
   payload[index++] = R_Data.Min_Rtc; // 2
   payload[index++] = R_Data.Hour_Rtc; // 3
@@ -286,9 +308,11 @@ void webSocketSend() {
   payload[index++] = (R_Data.Comperssor_Running_RPM >> 8) & 0xFF; // 75
   payload[index++] = R_Data.Comperssor_Running_RPM & 0xFF; // 76
 
+  // payload[index++] = allowedValues[random(allowedCount)];; // 77
+  // payload[index++] = ibFaultCodes[random(ibFaultCount)]; // 78
+
   payload[index++] = R_Data.Inv_Error; // 77
   payload[index++] = R_Data.Falut_Inv_code; // 78
-
   payload[index++] = (R_Data.Ton_sec >> 24) & 0xFF; // 79
   payload[index++] = (R_Data.Ton_sec >> 16) & 0xFF; // 80
   payload[index++] = (R_Data.Ton_sec >> 8) & 0xFF; // 81

@@ -86,13 +86,16 @@ void setup() {
   // webSocketSetup();
   // WiFi.mode(WIFI_AP_STA);
   // Serial.println("WIFI SET TO DUAL MODE");
-  webSocketSetup();
+  // WiFi.softAP(deviceName.c_str(), "");
+  // Serial.println("AP Started: " + deviceName);
+  // webSocketSetup();
+  randomSeed(analogRead(0));
 }
 
 void webSocketSetup() {
-  WiFi.mode(WIFI_AP_STA);
+  // WiFi.mode(WIFI_AP_STA);
   loadCredentials();
-  startAccessPoint();
+  // startAccessPoint();
   startWebSocketServer();
 
   mac = WiFi.softAPmacAddress();
@@ -100,10 +103,18 @@ void webSocketSetup() {
 }
 
 void connectToWiFi() {
+  preferences.begin("wifi", true);
+  routerSSID = preferences.getString("ssid", "admin");
+  routerPASS = preferences.getString("pass", "admin");
+  deviceName = preferences.getString("name", "ESP_AP");
+  preferences.end();
   Serial.println("WiFi Function Called");
   if (WiFi.status() != WL_CONNECTED) {
     Serial.println("Connecting to WiFi...");
-    WiFi.begin(ssid, password);
+    Serial.print(routerSSID);
+    Serial.println("----PASS:");
+    Serial.println(routerPASS);
+    WiFi.begin("Sabro_design", "STPL@sabro");
 
     unsigned long startAttemptTime = millis();
     const unsigned long timeout = 15000;  // 15 seconds
@@ -129,29 +140,47 @@ void connectToWiFi() {
 void initializeMqttTopics() {
   mac = WiFi.softAPmacAddress();
   mac.replace(":", "");
-  mqttSubscribeTopic = mac + "/command";
-  mqttPublishTopic = mac + "/state";
+  mqttSubscribeTopic = "sabro/ac/" + mac + "/command";
+  mqttPublishTopic = "sabro/ac/" + mac + "/state";
   subscribeTopic = mqttSubscribeTopic.c_str();
   publishTopic = mqttPublishTopic.c_str();
   // String randomString = String(random(0xffff), HEX);
   clientId = "ESP-" + mac;
+
+  Serial.println("====== MQTT TOPICS SET ======");
+  Serial.print("Subscribe Topic: ");
+  Serial.println(subscribeTopic);
+  Serial.print("Publish Topic: ");
+  Serial.println(publishTopic);
+  Serial.print("MQTT Client ID: ");
+  Serial.println(clientId);
+  Serial.println("=============================");
 }
 
 
 
 void reconnectMqtt() {
   while (!client.connected()) {
-    Serial.print("Connecting to MQTT.....");
+    Serial.print("Connecting to MQTT... ");
     if (client.connect(clientId.c_str())) {
       Serial.println("Connected!");
+
+      Serial.print("Subscribing to topic: ");
+      Serial.println(subscribeTopic);
+      client.subscribe(subscribeTopic);
+
+      Serial.print("Publishing online status to topic: ");
+      Serial.println(publishTopic);
+      client.publish(publishTopic, "ESP is online");
+
     } else {
-      Serial.print("Failed, rc = ");
-      Serial.print(client.state());
-      Serial.println(" Retrying in 5 Seconds.....");
+      Serial.print("MQTT failed. rc=");
+      Serial.println(client.state());
       delay(5000);
     }
   }
 }
+
 
 
 
@@ -168,7 +197,7 @@ void loop() {
   }
   Time_Total_e = millis();
   Time_Total_c = Time_Total_e - Time_Total_s;
-  New_Print_Center();
+  // New_Print_Center();
   // Run_Print();
   // Pack_print();
   //pprint_ALL();

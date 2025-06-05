@@ -28,7 +28,7 @@ void WiFiMqtt() {
       if (client.connect(clientId.c_str())) {
         Serial.println("Connected to MQTT broker");
 
-        String topic = "test/" + mac + "/topic";
+        String topic = "sabro/ac/" + mac + "/state";
         Serial.print("Topic Name: ");
         Serial.println(publishTopic);
         client.subscribe(subscribeTopic);

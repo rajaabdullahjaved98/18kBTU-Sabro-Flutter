@@ -165,6 +165,11 @@ uint32_t   NTon_Sec_Left=0;
 uint32_t   Ton_Sec_Left=0;
 uint32_t    Tof_Sec_Left=0;
 
+bool bit4;
+bool bit5;
+bool bit6;
+bool bit7;
+
 
 
 //
@@ -399,7 +404,7 @@ String deviceName = "ESP_AP";
 const char* ssid = "Sabro_design";
 const char* password = "STPL@sabro";
 
-const char* mqttServer = "192.168.18.104";
+const char* mqttServer = "139.59.250.177";
 const uint16_t mqttPort = 1883;
 const char* mqttUser = "test_device";
 const char* mqttPassword = "Test1234";
